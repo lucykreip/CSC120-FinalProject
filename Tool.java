@@ -1,10 +1,9 @@
-public class Tool extends Thing {
-    boolean used;
-
-    public Tool(String name){
+public class Tool extends Thing { 
+    private ToolKey id;
+    
+    public Tool(ToolKey id, String name){
         super(name);
-        this.used = false;
+        this.id = id;
+
     }
-
-
 }
