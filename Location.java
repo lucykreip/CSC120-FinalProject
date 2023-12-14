@@ -14,16 +14,16 @@ public class Location {
     }
 
     public RoomKey nextRoom(String direction){
-        if (direction == "north"){
+        if (direction.equals("north")){
             return this.north;
         }
-        if (direction == "south"){
+        if (direction.equals("south")){
             return this.south;
         }
-        if (direction == "east"){
+        if (direction.equals("east")){
             return this.east;
         }
-        if (direction == "west"){
+        if (direction.equals("west")){
             return this.west;
         }
         return null;

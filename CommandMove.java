@@ -11,10 +11,10 @@ public class CommandMove extends Command {
         RoomKey nextRoom = this.gameMap.canGo(room.getID(), noun);
         if (nextRoom != null){
             Room newRoom = this.player.setLocation(this.game.getRoomFromKey(nextRoom));
-            System.out.println("You are in the " + newRoom);
+            System.out.println("You are in the " + newRoom + " room.");
         }
         else{
-            System.out.println("There is no room to the " + noun);
+            System.out.println("There is no room to the " + noun + ".");
         }
     }
 

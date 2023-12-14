@@ -37,37 +37,39 @@ public class Game {
         this.toolsLookup.put("plunger", toolsTable.get(ToolKey.PLUNGER));
         this.toolsLookup.put("sheets",  toolsTable.get(ToolKey.SHEETS));
         this.toolsLookup.put("hammer",  toolsTable.get(ToolKey.HAMMER));
-        this.toolsLookup.put("hammer",  toolsTable.get(ToolKey.HAMMER));
-        this.toolsLookup.put("hammer",  toolsTable.get(ToolKey.HAMMER));
-        this.toolsLookup.put("hammer",  toolsTable.get(ToolKey.HAMMER));
-        // this.toolsTable.put(ToolKey.BROOM, new Tool(ToolKey.BROOM, "broom"));
-        // this.toolsTable.put(ToolKey.SPONGE, new Tool(ToolKey.SPONGE, "sponge"));
-        // this.toolsTable.put(ToolKey.SCREWDRIVER, new Tool(ToolKey.SCREWDRIVER, "screwdriver"));
+        this.toolsLookup.put("broom",  toolsTable.get(ToolKey.BROOM));
+        this.toolsLookup.put("sponge",  toolsTable.get(ToolKey.SPONGE));
+        this.toolsLookup.put("screwdriver",  toolsTable.get(ToolKey.SCREWDRIVER));
 
         this.appliancesTable = new Hashtable<ApplianceKey, Appliance>();
-        this.appliancesTable.put(ApplianceKey.TOILET, new Appliance("toilet", toolsTable.get(ToolKey.PLUNGER)));
-        this.appliancesTable.put(ApplianceKey.BED, new Appliance("bed", toolsTable.get(ToolKey.SHEETS)));
-        this.appliancesTable.put(ApplianceKey.TABLE, new Appliance("table", toolsTable.get(ToolKey.HAMMER)));
-        this.appliancesTable.put(ApplianceKey.RUG, new Appliance("rug", toolsTable.get(ToolKey.BROOM)));
-        this.appliancesTable.put(ApplianceKey.STOVE, new Appliance("stove", toolsTable.get(ToolKey.SPONGE)));
-        this.appliancesTable.put(ApplianceKey.LIGHT, new Appliance("light", toolsTable.get(ToolKey.SCREWDRIVER)));
+        this.appliancesTable.put(ApplianceKey.TOILET, new Appliance("clogged toilet", toolsTable.get(ToolKey.PLUNGER)));
+        this.appliancesTable.put(ApplianceKey.BED, new Appliance("messy bed", toolsTable.get(ToolKey.SHEETS)));
+        this.appliancesTable.put(ApplianceKey.TABLE, new Appliance("broken table", toolsTable.get(ToolKey.HAMMER)));
+        this.appliancesTable.put(ApplianceKey.RUG, new Appliance("dusty rug", toolsTable.get(ToolKey.BROOM)));
+        this.appliancesTable.put(ApplianceKey.STOVE, new Appliance("dirty stove", toolsTable.get(ToolKey.SPONGE)));
+        this.appliancesTable.put(ApplianceKey.LIGHT, new Appliance("flickering light", toolsTable.get(ToolKey.SCREWDRIVER)));
         
         this.roomsTable = new Hashtable<RoomKey, Room>();
         this.roomsTable.put(RoomKey.BATH, new Room(RoomKey.BATH, "bathroom", appliancesTable.get(ApplianceKey.TOILET)));
         this.roomsTable.put(RoomKey.BEDROOM, new Room(RoomKey.BEDROOM, "bedroom", appliancesTable.get(ApplianceKey.BED)));
-        this.roomsTable.put(RoomKey.DINING, new Room(RoomKey.DINING, "dining room", appliancesTable.get(ApplianceKey.TABLE)));
-        this.roomsTable.put(RoomKey.LIVING, new Room(RoomKey.LIVING, "living room", appliancesTable.get(ApplianceKey.RUG)));
+        this.roomsTable.put(RoomKey.DINING, new Room(RoomKey.DINING, "dining", appliancesTable.get(ApplianceKey.TABLE)));
+        this.roomsTable.put(RoomKey.LIVING, new Room(RoomKey.LIVING, "living", appliancesTable.get(ApplianceKey.RUG)));
         this.roomsTable.put(RoomKey.KITCHEN, new Room(RoomKey.KITCHEN, "kitchen", appliancesTable.get(ApplianceKey.STOVE)));
         this.roomsTable.put(RoomKey.ENTRY, new Room(RoomKey.ENTRY, "entryway", appliancesTable.get(ApplianceKey.LIGHT)));
 
         this.roomsLookup = new Hashtable <String, RoomKey>();
         this.roomsLookup.put("bathroom", RoomKey.BATH);
         this.roomsLookup.put("bedroom", RoomKey.BEDROOM);
-        this.roomsLookup.put("dining room", RoomKey.DINING);
-        this.roomsLookup.put("living room", RoomKey.LIVING);
+        this.roomsLookup.put("dining", RoomKey.DINING);
+        this.roomsLookup.put("living", RoomKey.LIVING);
         this.roomsLookup.put("kitchen", RoomKey.KITCHEN);
         this.roomsLookup.put("entryway", RoomKey.ENTRY);
 
+        this.roomsTable.get(RoomKey.BATH).addTool(this.toolsTable.get(ToolKey.SPONGE));
+        this.roomsTable.get(RoomKey.BEDROOM).addTool(this.toolsTable.get(ToolKey.HAMMER));
+        this.roomsTable.get(RoomKey.DINING).addTool(this.toolsTable.get(ToolKey.BROOM));
+        this.roomsTable.get(RoomKey.LIVING).addTool(this.toolsTable.get(ToolKey.SCREWDRIVER));
+        this.roomsTable.get(RoomKey.KITCHEN).addTool(this.toolsTable.get(ToolKey.SHEETS));
         this.roomsTable.get(RoomKey.ENTRY).addTool(this.toolsTable.get(ToolKey.PLUNGER));
 
         this.player = new Player(roomsTable.get(RoomKey.ENTRY));
@@ -82,6 +84,8 @@ public class Game {
         this.commands.put("grab", new CommandGrab(this.player, this));
         this.commands.put("drop", new CommandDrop(this.player, this));
         this.commands.put("move", new CommandMove(this.player, this, this.gameMap));
+        this.commands.put("explore", new CommandExplore(this.player, this));
+        this.commands.put("list", new CommandList(this.player, this));
 
         
         /*
@@ -92,13 +96,38 @@ public class Game {
 
     }
 
+    //returns false until game is done
     public void scanAndRunCommand(){
         String userResponse = this.scan.nextLine();
+        //String userResponse = "move north";
         String[] responseParsed = userResponse.split(" ");
         String verb = responseParsed[0];
-        String noun = responseParsed[1];
-        Command c = this.commands.get(verb);
-        c.executeWork(noun); 
+        if (this.commands.containsKey(verb)){
+            try{
+                String noun = responseParsed[1];
+                Command c = this.commands.get(verb);
+                c.executeWork(noun); 
+            }
+            catch(Exception e){
+                System.out.println("You need to write a noun. Indicate the direction, tool or room, for example.");
+            }
+        }
+        else{
+            System.out.println("That verb is not known. Try: move, grab, drop, explore, list.");
+        }
+    }
+
+    public void gameLoop(){
+        System.out.println();
+        System.out.println("You are standing in the entryway room of a house. Each room has a broken appliance that needs to be fixed to rennovate the house.");
+        System.out.println("Explore the rooms to identify the appliance and reason what the needed tool is from elsewhere in the house.");
+        System.out.println("To complete the rennovation, make sure that each appliance has it's corresponding tool in the same room.");
+        while (this.numCompletedRooms < this.roomsTable.size()){
+            System.out.print("> ");
+            this.scanAndRunCommand();
+
+        }
+        scan.close();
     }
 
     public Tool lookupTool(String noun){
@@ -113,6 +142,10 @@ public class Game {
         return this.roomsTable.get(r);
     }
 
+    public boolean containsRoom(String noun){
+        return this.roomsLookup.containsKey(noun);
+    }
+
     public String addCompletedRoom(int compRoom){
         this.numCompletedRooms += compRoom;
         return "You have " + this.numCompletedRooms + " completed room(s)";
@@ -120,9 +153,9 @@ public class Game {
 
     public static void main(String[] args) {
         Game myGame = new Game();
-        Command c = myGame.commands.get("move");
-        Command c2 = myGame.commands.get("grab");
-        Command c3 = myGame.commands.get("drop");
+        // Command c = myGame.commands.get("move");
+        // Command c2 = myGame.commands.get("grab");
+        // Command c3 = myGame.commands.get("drop");
         // c.executeWork("east");
         // c.executeWork("north");
         // c.executeWork("north");
@@ -131,10 +164,13 @@ public class Game {
         // c.executeWork("west");
         // c.executeWork("south");
         // c.executeWork("north");
-        // c.executeWork("north");
-        c2.executeWork("plunger");
-        c3.executeWork("plunger");
-        c3.executeWork("plunger");
+        // // c.executeWork("north");
+        // c2.executeWork("plunger");
+        // c3.executeWork("plunger");
+        // c3.executeWork("plunger");
+        // c3.executeWork("blah");
+        myGame.gameLoop();
+
 
 
         

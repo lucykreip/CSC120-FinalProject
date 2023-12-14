@@ -5,11 +5,11 @@ public class CommandGrab extends Command{
     }
 
     public void executeWork(String noun){
-        System.out.println("CommandGrab");
+        // System.out.println("CommandGrab");
         Tool t = this.game.lookupTool(noun); //getting a tool back
         if (t != null){
             if (this.player.pickUpTool(t)){
-                System.out.println(noun + " is in your inventory.");
+                System.out.println("The " + noun + " is in your inventory.");
             }
         }
         else{

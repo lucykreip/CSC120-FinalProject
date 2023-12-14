@@ -5,7 +5,7 @@ public class CommandDrop extends Command{
     }
 
     public void executeWork(String noun){
-        System.out.println("CommandDrop");
+        // System.out.println("CommandDrop");
         Tool t = this.game.lookupTool(noun); //getting a tool back
         if (t != null){
             boolean previous = this.player.getLocation().getCompletedOrNot();
