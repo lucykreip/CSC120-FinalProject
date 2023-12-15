@@ -109,7 +109,7 @@ public class Game {
                 c.executeWork(noun); 
             }
             catch(Exception e){
-                System.out.println("You need to write a noun. Indicate the direction, tool or room, for example.");
+                System.out.println("You need to write a noun. Indicate the direction(north, south, east, west), tool or room, for example.");
             }
         }
         else{
@@ -119,7 +119,8 @@ public class Game {
 
     public void gameLoop(){
         System.out.println();
-        System.out.println("You are standing in the entryway room of a house. Each room has a broken appliance that needs to be fixed to rennovate the house.");
+        System.out.println("You are standing in the entryway room of a house. There are doors to the north, east, and west.");
+        System.out.println("Each room has a broken appliance that needs to be fixed to rennovate the house.");
         System.out.println("Explore the rooms to identify the appliance and reason what the needed tool is from elsewhere in the house.");
         System.out.println("To complete the rennovation, make sure that each appliance has it's corresponding tool in the same room.");
         while (this.numCompletedRooms < this.roomsTable.size()){
@@ -127,6 +128,7 @@ public class Game {
             this.scanAndRunCommand();
 
         }
+        System.out.println("Your house is rennovated! Enjoy!");
         scan.close();
     }
 
