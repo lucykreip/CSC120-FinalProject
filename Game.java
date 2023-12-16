@@ -2,24 +2,22 @@
 import java.util.Hashtable;
 import java.util.Scanner;
 
+/*
+ * Game constructor- initializes a number of hashtables to look up rooms, appliances, tools, by their 'keys' and string names.
+ * Initializes player, game map, scanner, sets commands and starting locations for tools.
+ */
 public class Game {
-    // hashtable of rooms, 
-    // create rooms- hashtable of roomKeys, rooms
+    private Hashtable<ToolKey, Tool> toolsTable;
+    private Hashtable<String, Tool> toolsLookup;
+
+    private Hashtable<ApplianceKey, Appliance> appliancesTable;
+
     private Hashtable<RoomKey, Room> roomsTable;
     private Hashtable<String, RoomKey> roomsLookup;
-    //
-    // create appliances- hashtable of applianceKeys, appliances
-    private Hashtable<ApplianceKey, Appliance> appliancesTable;
-    // create tools- hashtable of toolKeys, tools
-    private Hashtable<ToolKey, Tool> toolsTable;
-
-    private Hashtable<String, Tool> toolsLookup;
-    // create player- track his location 
 
     private Hashtable<String, Command> commands;
 
     private Player player;
-    // adding the preliminary tools to each room
     private GameMap gameMap;
     private Scanner scan;
     private int numCompletedRooms;
@@ -96,10 +94,12 @@ public class Game {
 
     }
 
-    //returns false until game is done
+    /*
+     * assigns 2-word user input to a string and parses it into a verb and noun string. Checks that the verb can be used and uses the correct command based off of the verb. 
+     * Uses the noun in the corresponding executeWork function for the correct Command class. 
+     */
     public void scanAndRunCommand(){
         String userResponse = this.scan.nextLine();
-        //String userResponse = "move north";
         String[] responseParsed = userResponse.split(" ");
         String verb = responseParsed[0];
         if (this.commands.containsKey(verb)){
@@ -117,11 +117,14 @@ public class Game {
         }
     }
 
+    /*
+     * Prints out initial directions, runs a while loop to scan input and run commands, until the numer of completed rooms is reached. Closes scanner and prints out final message after. 
+     */
     public void gameLoop(){
         System.out.println();
         System.out.println("You are standing in the entryway room of a house. There are doors to the north, east, and west.");
         System.out.println("Each room has a broken appliance that needs to be fixed to rennovate the house.");
-        System.out.println("Explore the rooms to identify the appliance and reason what the needed tool is from elsewhere in the house.");
+        System.out.println("Explore the rooms to identify the appliance and determine what the needed tool is from elsewhere in the house.");
         System.out.println("To complete the rennovation, make sure that each appliance has it's corresponding tool in the same room.");
         while (this.numCompletedRooms < this.roomsTable.size()){
             System.out.print("> ");
@@ -132,22 +135,47 @@ public class Game {
         scan.close();
     }
 
+    /*
+     * gets the corresponding tool based off of the string name of the tool.
+     * @param String noun
+     * @return Tool
+     */
     public Tool lookupTool(String noun){
         return this.toolsLookup.get(noun);
     }
 
+    /*
+     * gets the corresponding RoomKey based off of the string name of a room
+     * @param String noun
+     * @return RoomKey
+     */
     public RoomKey lookupRoom(String noun){
         return this.roomsLookup.get(noun);
     }
 
+    /*
+     * gets the corresponding room from the given RoomKey
+     * @param RoomKey r
+     * @return Room
+     */
     public Room getRoomFromKey(RoomKey r){
         return this.roomsTable.get(r);
     }
 
+    /*
+     * checks if the roomsLookup hashtable contains the given string 
+     * @param String noun
+     * @return boolean 
+     */
     public boolean containsRoom(String noun){
         return this.roomsLookup.containsKey(noun);
     }
 
+    /*
+     * adds the newly completeed room to the number of completed rooms
+     * @param int compRoom
+     * @return String indicating the number of completed rooms
+     */
     public String addCompletedRoom(int compRoom){
         this.numCompletedRooms += compRoom;
         return "You have " + this.numCompletedRooms + " completed room(s)";
@@ -155,28 +183,7 @@ public class Game {
 
     public static void main(String[] args) {
         Game myGame = new Game();
-        // Command c = myGame.commands.get("move");
-        // Command c2 = myGame.commands.get("grab");
-        // Command c3 = myGame.commands.get("drop");
-        // c.executeWork("east");
-        // c.executeWork("north");
-        // c.executeWork("north");
-        // c.executeWork("west");
-        // c.executeWork("north");
-        // c.executeWork("west");
-        // c.executeWork("south");
-        // c.executeWork("north");
-        // // c.executeWork("north");
-        // c2.executeWork("plunger");
-        // c3.executeWork("plunger");
-        // c3.executeWork("plunger");
-        // c3.executeWork("blah");
         myGame.gameLoop();
-
-
-
-        
-
     }
 
 }

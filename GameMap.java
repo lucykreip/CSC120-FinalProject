@@ -3,6 +3,9 @@ import java.util.Hashtable;
 public class GameMap{
     private Hashtable<RoomKey, Location> locations;
 
+    /*
+     * constructs a GameMap, initializing all the RoomKeys in a hashtable and sets the RoomKeys to the north, south, east, and west. 
+     */
     public GameMap(){
         this.locations = new Hashtable<RoomKey, Location>();
         this.locations.put(RoomKey.LIVING, new Location(null, RoomKey.ENTRY, RoomKey.BATH, RoomKey.KITCHEN));
@@ -13,23 +16,22 @@ public class GameMap{
         this.locations.put(RoomKey.DINING, new Location(RoomKey.KITCHEN, null, RoomKey.ENTRY, null));
     }
 
+    /*
+     * returns the location of the given RoomKey
+     * @param RoomKey room
+     * @return Location
+     */
     public Location getLocation(RoomKey room){
         return this.locations.get(room);
     }
-
+    
+    /*
+     * returns the RoomKey to the inputted direction
+     * @param RoomKey room, String direction
+     * @return RoomKey
+     */
     public RoomKey canGo(RoomKey room, String direction){
         Location myLocation = this.getLocation(room);
         return myLocation.nextRoom(direction);
     }
-
-
-    public static void main(String[] args) {
-        GameMap myGame = new GameMap();
-        System.out.println(myGame.getLocation(RoomKey.LIVING));
-        System.out.println(myGame.canGo(RoomKey.LIVING, "north"));
-        System.out.println(myGame.canGo(RoomKey.LIVING, "south"));
-        System.out.println(myGame.canGo(RoomKey.LIVING, "east"));
-        System.out.println(myGame.canGo(RoomKey.LIVING, "west"));
-    }
-    
 }

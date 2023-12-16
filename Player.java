@@ -4,20 +4,38 @@ public class Player {
     private ArrayList<Tool> inventory;
     private Room location;
 
+    /*
+     * Player constructor, initializes inventory arraylist
+     * @param location
+     */
     public Player(Room location){
         this.inventory = new ArrayList<Tool>();
         this.location = location;
     }
 
+    /*
+     * accessor to get Player location
+     * @return location
+     */
     public Room getLocation(){
         return this.location;
     }
 
+    /*
+     * sets the player's current location to the specified room
+     * @param Room r
+     * @return Room r
+     */
     public Room setLocation(Room r){
         this.location = r;
         return r;
     }
 
+    /*
+     * tries to add the specified tool to the player inventory, catches exception if thrown
+     * @param Tool t
+     * @return boolean 
+     */
     public boolean pickUpTool(Tool t){
         try{
             this.inventory.add(this.location.removeTool(t));
@@ -30,12 +48,19 @@ public class Player {
     }
 
     public boolean dropTool(Tool t){
-        this.inventory.remove(this.location.addTool(t));
-        this.location.computeCompleted();
-        return true;
-        //try catch it baby
+       if (this.inventory.contains(t)){
+           this.inventory.remove(this.location.addTool(t));
+           this.location.computeCompleted();
+           return true;
+        }
+        else{
+            return false;
+        }
     }
 
+    /*
+     * if inventory is empty prints a message stating so, otherwise prints contents of inventory
+     */
     public void printInventory(){
         if (this.inventory.isEmpty() == true){
             System.out.println("There is nothing in your inventory. Go explore.");
@@ -47,31 +72,13 @@ public class Player {
         }
     }
 
+    /*
+     * prints out the player's location and room contentss
+     */
     public void explore(){
         System.out.println("You are in the " + this.location + ", containing:");
         this.location.listThings();
     }
-
-    // public static void main(String[] args) {
-    //     Tool hammer = new Tool(ToolKey.HAMMER, "hammer");
-    //     Appliance table = new Appliance("Table", hammer);
-    //     Room r = new Room(RoomKey.DINING,"Dining Room", table);
-    //     Tool a = new Tool(ToolKey.SCREWDRIVER, "screwdriver");
-    //     Player me = new Player(r);
-    //     me.pickUpTool(a);
-    //     me.printInventory();
-    //     me.dropTool(a);
-    //     me.printInventory();
-    //     Tool sponge = new Tool(ToolKey.SPONGE, "sponge");
-    //     me.pickUpTool(sponge);
-    //     Appliance wm = new Appliance("Washing Machine", sponge);
-    //     System.out.println(wm);
-    //     me.printInventory();
-    //     r.addTool(hammer);
-    //     r.computeCompleted();
-    //     me.explore();
-    //     System.out.println(r.getCompletedOrNot());
-    //}
 
 
 }
